@@ -1,0 +1,28 @@
+.questionContainer {
+    display: flex;
+    width: fit-content;
+    margin: 0 auto;
+    font-size: 1rem;
+}
+
+.questionContainer input {
+    line-height: 1rem;
+}
+
+.questionContainer > * {
+    margin-right: 4rem;
+}
+
+.questionContainer > *:last-child {
+    margin-right: 0;
+}
+
+.questionContainer input {
+    height: fit-content;
+    padding: 0.2rem;
+}
+
+.questionContainer button {
+    height: fit-content;
+    padding: 0.2rem 0.5rem;
+}
