@@ -1,13 +1,13 @@
-import classes from '../resources/css/checkBox.module.css';
+import classes from '../resources/css/components/checkBox.module.css';
 
-const checkboxes = ["examples", "synonyms", "antonyms", "rhymes"];
+const checkboxes = ["examples", "synonyms", "antonyms"];
 
 function CheckBox () {
     return(
         <div className={classes.checkBoxContainer}>
-            {checkboxes.map(box => {
+            {checkboxes.map((box, i) => {
                 return (
-                    <div>
+                    <div key={`checkBoxDiv_${i}`}>
                         <input type="checkbox" id={box} name={box} value={box}/>
                         <label htmlFor={box}>
                             {box}

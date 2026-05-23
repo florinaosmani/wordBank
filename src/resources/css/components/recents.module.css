@@ -1,0 +1,20 @@
+.recentContainer {
+    border: 1px solid black;
+    height: fit-content;
+}
+
+.recentContainer h2 {
+    font-size: 1rem;
+    border-bottom: 1px solid black;
+    padding: 0.3rem;
+}
+
+.wordsContainer p {
+    padding: 0.3rem;
+    border-bottom: 1px solid black;
+}
+
+.wordsContainer p:last-child {
+    margin-bottom: -1px ;
+}
+

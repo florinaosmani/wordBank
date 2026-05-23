@@ -1,8 +1,12 @@
+import FavoriteBox from '../components/FavoriteBox';
+import classes from '../resources/css/pages/favorites.module.css';
+
 function Favorites () {
     return(
-        <>
-        <p>djlskdj</p>
-        </>
+        <div className={classes.favContainer}>
+            <FavoriteBox />
+            <FavoriteBox />
+        </div>
     )
 }
 
