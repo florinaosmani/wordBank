@@ -5,11 +5,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPenToSquare  } from '@fortawesome/free-regular-svg-icons'
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons'
 
-function FavoriteBox () {
+function FavoriteBox ({ def , word, indexWord, indexDef}) {
     return (
         <div className={classes.favoriteBoxContainer}>
-            <WordDefinition />
-            <p>Note</p>
+            <WordDefinition def={def} word={word}/>
+            <p>{def.note}</p>
             <div className={classes.buttonContainer}>
                 <button>
                     <FontAwesomeIcon icon={faPenToSquare} />

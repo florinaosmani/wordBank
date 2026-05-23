@@ -1,29 +1,25 @@
 import classes from '../resources/css/components/checkFavorite.module.css';
 import CheckBox from './CheckBox';
 
-function CheckFavorite () {
+function CheckFavorite ({ onClickClose, def, word, onChange, onClickSave}) {
     return (
-        <div className={classes.favContainer}>
+        <form className={classes.favContainer}>
             <div className={classes.infoContainer}>
-                <p>"word, verb <br/> definition" </p>
-                <div className={classes.checkBoxContainer}>
-                    <p>Save</p>
-                    <CheckBox />
-                </div>
+                <p>{word} | {def.partOfSpeech} <br/> {def.definition} </p>
                 <div className={classes.textContainer}>
                     <label>Add a Note:</label>
-                    <textarea maxLength="1000"></textarea>
+                    <textarea maxLength="1000" onChange={onChange}></textarea>
                 </div>
             </div>
             <div className={classes.buttonContainer}>
-                <button>
+                <button onClick={onClickClose}>
                     Cancel
                 </button>
-                <button>
+                <button onClick={onClickSave}>
                     Save
                 </button>
             </div>
-        </div>
+        </form>
     )
 }
 

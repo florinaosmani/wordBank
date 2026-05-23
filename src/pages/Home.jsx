@@ -2,14 +2,136 @@ import { useState, useEffect } from "react";
 
 import RandomBox from "../components/RandomBox";
 import WordInfo from "../components/WordInfo";
-import Recents from "../components/Recents";
-import CheckFavorite from "../components/CheckFavorite";
 
 import classes from '../resources/css/pages/home.module.css';
-
-
 const allWords={
   "words": [
+    {
+      "id": 0,
+      "word": "set",
+      "isFavoriteWord": true,
+      "results": [
+        {
+          "definition": "a group or collection of things that belong together",
+          "partOfSpeech": "noun",
+          "synonyms": [
+            "collection",
+            "group",
+            "series",
+            "assortment",
+            "batch",
+            "kit",
+            "array"
+          ],
+          "examples": [
+            "She bought a complete set of encyclopedias.",
+            "He owns a full set of vintage trading cards."
+          ],
+          "antonyms": [
+            "individual",
+            "single",
+            "unit"
+          ],
+          "isFavoriteDefinition": true,
+          "note": ""
+        },
+        {
+          "definition": "to put, lay, or stand something in a specified place or position",
+          "partOfSpeech": "verb",
+          "synonyms": [
+            "place",
+            "put",
+            "position",
+            "lay",
+            "arrange",
+            "deposit",
+            "locate"
+          ],
+          "examples": [
+            "She set the vase on the windowsill.",
+            "He set his bag down and took a deep breath."
+          ],
+          "antonyms": [
+            "remove",
+            "lift",
+            "take away",
+            "displace"
+          ],
+          "isFavoriteDefinition": true,
+          "note": ""
+        },
+        {
+          "definition": "(of the sun or moon) to go below the horizon",
+          "partOfSpeech": "verb",
+          "synonyms": [
+            "sink",
+            "descend",
+            "go down",
+            "dip",
+            "disappear"
+          ],
+          "examples": [
+            "The sun set behind the mountains in a blaze of orange.",
+            "They watched the moon set over the ocean."
+          ],
+          "antonyms": [
+            "rise",
+            "ascend",
+            "climb",
+            "appear"
+          ],
+          "isFavoriteDefinition": false,
+          "note": ""
+        },
+        {
+          "definition": "fixed or established in advance; not changing",
+          "partOfSpeech": "adjective",
+          "synonyms": [
+            "fixed",
+            "established",
+            "predetermined",
+            "rigid",
+            "firm",
+            "scheduled",
+            "definite"
+          ],
+          "examples": [
+            "The meeting starts at a set time every Monday.",
+            "She followed a set routine every morning without fail."
+          ],
+          "antonyms": [
+            "flexible",
+            "variable",
+            "changeable",
+            "fluid",
+            "open"
+          ],
+          "isFavoriteDefinition": false,
+          "note": ""
+        },
+        {
+          "definition": "the scenery and props used in a theatrical or film production",
+          "partOfSpeech": "noun",
+          "synonyms": [
+            "scenery",
+            "backdrop",
+            "stage",
+            "setting",
+            "scene",
+            "décor"
+          ],
+          "examples": [
+            "The set was designed to look like a 1920s New York apartment.",
+            "The entire cast gathered on set for the final scene."
+          ],
+          "antonyms": [],
+          "isFavoriteDefinition": false,
+          "note": ""
+        }
+      ],
+      "syllables": 1,
+      "pronunciation": "set"
+    },
     {
       "id": 1,
       "word": "abundant",
@@ -75,13 +197,13 @@ const allWords={
             "mean",
             "spiteful"
           ],
-          "isFavoriteDefinition": false,
+          "isFavoriteDefinition": true,
           "note": ""
         }
       ],
       "syllables": 4,
       "pronunciation": "b\u0259\u02c8nev\u0259l\u0259nt",
-      "isFavoriteWord": false
+      "isFavoriteWord": true
     },
     {
       "id": 3,
@@ -111,13 +233,13 @@ const allWords={
             "rambling",
             "prolix"
           ],
-          "isFavoriteDefinition": false,
+          "isFavoriteDefinition": true,
           "note": ""
         }
       ],
       "syllables": 2,
       "pronunciation": "k\u0259n\u02c8sa\u026as",
-      "isFavoriteWord": false
+      "isFavoriteWord": true
     },
     {
       "id": 4,
@@ -277,22 +399,32 @@ const allWords={
     }]};
 
 function Home () {
-    const [index, setIndex] = useState(null);
+    const [index, setIndex] = useState(0);
+    const [checkBoxes, setCheckBoxes] = useState({"examples": false, "synonyms": false, "antonyms": false});
+    const [showWord, setShowWord] = useState(false);
 
-    useEffect(() => {
-        const ran = Math.floor(Math.random() * allWords.words.length);
+    const handleClickGo = () => {
+        let ran;
+        do {  
+            ran = Math.floor(Math.random() * allWords.words.length);
+        } while (ran === index);
+
         setIndex(ran);
-    },[])
+
+        setShowWord(true);
+    }
 
     const wordData = allWords.words[index];
 
+    const handleChangeCheckBox = (e) => {
+        const toggleBool = !checkBoxes[e.target.value];
+        setCheckBoxes(checkBoxes => ({...checkBoxes, [e.target.value]: toggleBool}));
+    }
+
     return (
         <div className={classes.homeContainer}>
-            <RandomBox />
-            <div className={classes.flexContainer}>
-                <WordInfo wordData={wordData}/>
-                <Recents />
-            </div>
+            <RandomBox onClick={handleClickGo} onChange={handleChangeCheckBox} checked={checkBoxes}/>
+            {showWord && <WordInfo wordData={wordData} checkBoxes={checkBoxes}/>}
         </div>
     )
 }

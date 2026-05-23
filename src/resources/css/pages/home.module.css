@@ -1,17 +1,9 @@
 .homeContainer {
     margin-top: 4rem;
+    margin: 0 auto;
 }
 
-.flexContainer {
-    display: flex;
-    margin-top: 4rem;
-    justify-content: space-between;
-}
-
-.flexContainer > *:first-child {
-    width: 55%;
-}
-
-.flexContainer > *:nth-child(2) {
-    width: 30%;
+.homeContainer > *:last-child {
+    width: 60%;
+    margin: 4rem auto 0 auto;
 }

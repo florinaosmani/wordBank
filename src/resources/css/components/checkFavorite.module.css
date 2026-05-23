@@ -19,15 +19,6 @@
     align-items: center;
 }
 
-.checkBoxContainer {
-    display: flex;
-
-}
-
-.checkBoxContainer p {
-    margin-right: 1rem;
-}
-
 .textContainer {
     width: 100%;
     height: 10rem;

@@ -1,15 +1,15 @@
 import classes from '../resources/css/components/randomBox.module.css';
 import CheckBox from './CheckBox';
 
-function RandomBox () {
+function RandomBox ({ onClick, onChange, checked }) {
     return(
         <div className={classes.questionContainer}>
             <div className={classes.borderStyling}>
                 <p>Show</p>
-                <CheckBox />
+                <CheckBox onChange={onChange} checked={checked}/>
                 <p>for a random word</p>
             </div>
-            <button>
+            <button onClick={onClick}>
                 Go
             </button>
         </div>

@@ -5,16 +5,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHeart as heartFull } from '@fortawesome/free-solid-svg-icons'
 import { faHeart as heartEmpty } from '@fortawesome/free-regular-svg-icons'
 
-function WordDefinitionBox ({ def, index, word}) {
+function WordDefinitionBox ({ def, index, word, checkBoxes, onClick}) {
     return (
         <div className={classes.wordDefinitionBoxContainer} key={`wordDefinition_${index}`}>
             <p className={classes.defNum}>
                 {index + 1}
             </p>
-            <WordDefinition def={def} word={word}/>
-            <button className={classes.favButton}>
-                {def.isFavoriteDefinition && <FontAwesomeIcon icon={heartFull} />}
-                {!def.isFavoriteDefinition && <FontAwesomeIcon icon={heartEmpty} />}
+            <WordDefinition def={def} word={word} checkBoxes={checkBoxes}/>
+            <button className={classes.favButton} onClick={onClick} value={index}>
+                {def.isFavoriteDefinition && <FontAwesomeIcon icon={heartFull} value={index}/>}
+                {!def.isFavoriteDefinition && <FontAwesomeIcon icon={heartEmpty} value={index}/>}
             </button>
         </div>
     )
