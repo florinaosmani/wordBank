@@ -8,6 +8,9 @@
     transform: translate(-50%, -50%);
     background-color: white;
     border: 3px solid black;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .infoContainer {
@@ -43,4 +46,10 @@
 
 .buttonContainer button:last-child {
     border-left: 3px solid black;
+}
+
+.error {
+    font-size: 1.2rem;
+    color: red;
+    font-weight: bold;
 }

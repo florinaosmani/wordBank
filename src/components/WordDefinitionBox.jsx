@@ -13,8 +13,8 @@ function WordDefinitionBox ({ def, index, word, checkBoxes, onClick}) {
             </p>
             <WordDefinition def={def} word={word} checkBoxes={checkBoxes}/>
             <button className={classes.favButton} onClick={onClick} value={index}>
-                {def.isFavoriteDefinition && <FontAwesomeIcon icon={heartFull} value={index}/>}
-                {!def.isFavoriteDefinition && <FontAwesomeIcon icon={heartEmpty} value={index}/>}
+                {def.isFavoriteDefinition && <FontAwesomeIcon icon={heartFull}/>}
+                {!def.isFavoriteDefinition && <FontAwesomeIcon icon={heartEmpty}/>}
             </button>
         </div>
     )

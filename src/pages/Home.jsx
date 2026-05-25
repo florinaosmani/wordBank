@@ -1,11 +1,8 @@
 import { useState, useEffect } from "react";
-
 import RandomBox from "../components/RandomBox";
 import WordInfo from "../components/WordInfo";
-
 import classes from '../resources/css/pages/home.module.css';
-
-const API_URL = import.meta.env.VITE_API_URL;
+import { getAllWords, updateWord } from "../api/words";
 
 function Home () {
     const [index, setIndex] = useState(0);
@@ -14,15 +11,12 @@ function Home () {
     const [allWords, setAllWords] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [favError, setFavError] = useState(false);
 
     useEffect(()=>{
         async function loadWords() {
             try{
-                const response = await fetch(`${API_URL}/words`);
-                if (!response.ok) {
-                    throw new Error("Words couldn't be loaded");
-                }
-                const data = await response.json();
+                const data = await getAllWords();
                 setAllWords(data);
             } catch (e) {
                 setError(e.message);
@@ -34,13 +28,19 @@ function Home () {
     },[])
 
     const handleClickGo = () => {
+        if (allWords.length === 1) {
+            setIndex(0);
+            setShowWord(true);
+            return;
+        }
+
         let ran;
         do {  
             ran = Math.floor(Math.random() * allWords.length);
+            console.log(ran);
         } while (ran === index);
 
         setIndex(ran);
-
         setShowWord(true);
     }
 
@@ -51,10 +51,24 @@ function Home () {
         setCheckBoxes(checkBoxes => ({...checkBoxes, [e.target.value]: toggleBool}));
     }
 
+    const handleSubmitFav = async (word) => {
+        try {
+            const updated = await updateWord(word.id, word);
+            setAllWords(prev => prev.map(w => (w.id === word.id ? updated : w)));
+            return true;
+        } catch (e) {
+            setFavError(true);
+            return false;
+        }
+    }
+
     if (isLoading) {
         return (
             <div className={classes.homeContainer}>
-                <RandomBox onClick={handleClickGo} onChange={handleChangeCheckBox} checked={checkBoxes}/>
+                <RandomBox 
+                onClick={handleClickGo} 
+                onChange={handleChangeCheckBox} 
+                checked={checkBoxes}/>
                 <p>I'm still loading. Please wait for me.</p>
             </div>
         )
@@ -63,10 +77,18 @@ function Home () {
     if (error) {
         return (
             <div className={classes.homeContainer}>
-                <RandomBox onClick={handleClickGo} onChange={handleChangeCheckBox} checked={checkBoxes}/>
+                <RandomBox 
+                onClick={handleClickGo} 
+                onChange={handleChangeCheckBox} 
+                checked={checkBoxes}/>
                 <div>
-                    <p style={{marginBottom:1 + "rem"}}>Fehler: {error}</p>
-                    <button onClick={() => window.location.reload()}>Erneut versuchen</button>
+                    <p style={{marginBottom:1 + "rem"}}>
+                        Error: {error}
+                    </p>
+                    <button 
+                    onClick={() => window.location.reload()}>
+                        Try again
+                    </button>
                 </div>
             </div>
         )
@@ -74,8 +96,15 @@ function Home () {
 
     return (
         <div className={classes.homeContainer}>
-            <RandomBox onClick={handleClickGo} onChange={handleChangeCheckBox} checked={checkBoxes}/>
-            {showWord && <WordInfo wordData={wordData} checkBoxes={checkBoxes}/>}
+            <RandomBox 
+            onClick={handleClickGo} 
+            onChange={handleChangeCheckBox} 
+            checked={checkBoxes}/>
+            {showWord && 
+            <WordInfo 
+            wordData={wordData} 
+            checkBoxes={checkBoxes}
+            onSubmit={handleSubmitFav}/>}
         </div>
     )
 }

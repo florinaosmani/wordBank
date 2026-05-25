@@ -5,16 +5,17 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPenToSquare  } from '@fortawesome/free-regular-svg-icons'
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons'
 
-function FavoriteBox ({ def , word, indexWord, indexDef}) {
+function FavoriteBox ({ def , word, onClickEdit, onClickDelete, defIndex, wordIndex, deleteError }) {
     return (
         <div className={classes.favoriteBoxContainer}>
+            {deleteError && <p className={classes.error}>Oopsie, there's been an error in deleting your word</p>}
             <WordDefinition def={def} word={word}/>
             <p>{def.note}</p>
             <div className={classes.buttonContainer}>
-                <button>
+                <button onClick={onClickEdit} value={`${defIndex}_${wordIndex}`}>
                     <FontAwesomeIcon icon={faPenToSquare} />
                 </button>
-                <button>
+                <button onClick={onClickDelete} value={`${defIndex}_${wordIndex}`}>
                     <FontAwesomeIcon icon={faTrashCan} />
                 </button>
             </div>

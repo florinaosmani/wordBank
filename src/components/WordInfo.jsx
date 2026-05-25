@@ -4,31 +4,86 @@ import CheckFavorite from "./CheckFavorite";
 import classes from '../resources/css/components/wordInfo.module.css';
 import { useState } from "react";
 
-function WordInfo ({ wordData, checkBoxes }) {
+function WordInfo ({ wordData, checkBoxes, onSubmit }) {
     const [favOpen, setFavOpen] = useState(false);
-    const [favIndex, setFavIndex] = useState(null);
+    const [favDefIndex, setFavDefIndex] = useState(null);
     const [note, setNote] = useState("");
 
-    const handleOpenFav = (e) => {
-        setFavOpen(true);
-        setFavIndex(e.currentTarget.value);
+    const handleClickHeart = (e) => {
+        const index = e.currentTarget.value;
+
+        if (!favOpen && !wordData.results[index].isFavoriteDefinition){ //so you cant open other definitions while its still open + if it black no open
+            setFavOpen(true);
+            setFavDefIndex(e.currentTarget.value);
+        } else if (!favOpen && wordData.isFavoriteWord && wordData.results[index].isFavoriteDefinition) {
+            let changedWord;
+                
+            const changedDef = {
+                ...wordData.results[index],
+                isFavoriteDefinition: false,
+                note: ""
+            };
+
+            let hasAnotherFav = false;
+            let counter = 0;
+            wordData.results.forEach(def => {
+                if (def.isFavoriteDefinition){
+                    counter++;
+                }
+            })
+            if(counter > 1) {
+                hasAnotherFav = true;
+            }
+            
+            if (hasAnotherFav) {
+                changedWord = {
+                    ...wordData,
+                isFavoriteWord: true,
+                results: wordData.results.map((def, i) => (i == index ? changedDef : def))
+                };
+            } else {
+                changedWord = {
+                    ...wordData,
+                isFavoriteWord: false,
+                results: wordData.results.map((def, i) => (i == index ? changedDef : def))
+                };
+            }
+
+            onSubmit(changedWord);
+        }
     }
 
     const handleCloseFav = () => {
         setFavOpen(false);
+        setNote("");
+        setFavDefIndex(null);
     }
 
     const handleChangeNote = (e) => {
         setNote(e.target.value);
     }
 
-    const handleSaveNote = () => {
-        /* SAVE NOTE HERE  PLUS CHANGE FAVORITE STATUS IN DB*/
-        setFavIndex(null);
+    const handleSaveNote = (e) => {
+        e.preventDefault();
+
+        const changedDef = {
+            ...wordData.results[favDefIndex],
+            isFavoriteDefinition: true,
+            note: note
+        };
+
+        const changedWord = {
+            ...wordData,
+        isFavoriteWord: true,
+        results: wordData.results.map((def, i) => (i == favDefIndex ? changedDef : def))
+        };
+
+        setFavDefIndex(null);
         setFavOpen(false);
         setNote("");
-    }
 
+        onSubmit(changedWord);
+    }
     
     return (
         <div className={classes.wordInfoContainer}>
@@ -37,6 +92,7 @@ function WordInfo ({ wordData, checkBoxes }) {
                 <p>{wordData.pronunciation}</p>
                 <p>{wordData.syllables} {wordData.syllables > 1 ? "syllables" : "syllable"}</p>
             </div>
+
             {wordData.results.map((def, i) => 
             <WordDefinitionBox 
             def={def} 
@@ -44,10 +100,16 @@ function WordInfo ({ wordData, checkBoxes }) {
             word={wordData.word} 
             key={i} 
             checkBoxes={checkBoxes}
-            onClick={handleOpenFav}/>)}
+            onClick={handleClickHeart}/>)}
+
             {favOpen && 
-            <CheckFavorite onClickClose={handleCloseFav} def={wordData.results[favIndex]} word={wordData.word} onClickSave={handleSaveNote}/>
-            }
+            <CheckFavorite 
+            onClickClose={handleCloseFav} 
+            def={wordData.results[favDefIndex]} 
+            word={wordData.word}
+            onSubmit={handleSaveNote}
+            note={note}
+            onChange={handleChangeNote}/>}
         </div>
     )
 }

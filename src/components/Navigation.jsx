@@ -19,7 +19,13 @@ function Navigation () {
                         Favorites
                     </NavLink>
                 </li>
-                
+                <li>
+                    <NavLink
+                        to='admin'
+                        className={({ isActive }) => isActive ? classes.active : ""}>
+                        Admin
+                    </NavLink>
+                </li>
             </ul>
         </nav>
     )

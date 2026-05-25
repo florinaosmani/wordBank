@@ -1,12 +1,13 @@
 import classes from '../resources/css/components/wordDefinition.module.css';
 import WordDefinitionList from './WordDefinitionList';
 
-function WordDefinition ({ def, word, checkBoxes = {"examples": false, "synonyms": false, "antonyms": false} }) {
+function WordDefinition ({ def, word, checkBoxes = {"examples": false, "synonyms": false, "antonyms": false} , isAdmin = false }) {
     return (
         <div className={classes.wordDefinitionContainer}>
+            {!isAdmin && 
             <h3>
                 {word} | {def.partOfSpeech}
-            </h3>
+            </h3>}
             <h3>Definition</h3>
             <p>{def.definition}</p>
             {checkBoxes.examples && (
