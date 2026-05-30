@@ -14,8 +14,8 @@ function Favorites () {
     const [note, setNote] = useState("");
     const [favDefIndex, setFavDefIndex] = useState(null);
     const [favIndex, setFavIndex] = useState(null);
-    const [favError, setFavError] = useState(false);
-    const [deleteError, setDeleteError] = useState(false);
+    const [favError, setFavError] = useState(null);
+    const [deleteError, setDeleteError] = useState(null);
 
     useEffect(()=>{
         async function loadWords() {
@@ -34,26 +34,24 @@ function Favorites () {
     const filteredWords = allWords.filter(word => word.isFavoriteWord);
 
     const handleSubmit = async (word) => {
-        setDeleteError(false);
-        setFavError(false);
         try {
             const updated = await updateWord(word.id, word);
             setAllWords(prev => prev.map(w => (w.id === word.id ? updated : w)));
-            return true;
+            return null;
         } catch (e) {
-            return false;
+            return e;
         }
     }
 
     const handleClickEdit = (e) => {
         if (deleteError) {
-            setDeleteError(false);
+            setDeleteError(null);
             setShowEdit(true);
             setFavDefIndex(e.currentTarget.value.split("_")[0]);
             setFavIndex(e.currentTarget.value.split("_")[1]);
         }
        
-        if(!showEdit && !favIndex){
+        if(!showEdit && favIndex === null){
             setShowEdit(true);
             setFavDefIndex(e.currentTarget.value.split("_")[0]);
             setFavIndex(e.currentTarget.value.split("_")[1]);
@@ -61,59 +59,62 @@ function Favorites () {
     }
 
     const handleChangeNote = (e) => {
+        setFavError(null);
         setNote(e.target.value);
     }
     
     const handleDeleteWord = async (e) => {
-        setDeleteError(false);
+        if (!showEdit){
+            setDeleteError(null);
 
-        const defIndex = e.currentTarget.value.split("_")[0];
-        const wordIndex = e.currentTarget.value.split("_")[1]
-        setFavDefIndex(defIndex);
-        setFavIndex(wordIndex);
+            const defIndex = e.currentTarget.value.split("_")[0];
+            const wordIndex = e.currentTarget.value.split("_")[1]
+            setFavDefIndex(defIndex);
+            setFavIndex(wordIndex);
 
-        const wordData = filteredWords.filter(word => word.id == wordIndex)[0];
+            const wordData = filteredWords.filter(word => word.id == wordIndex)[0];
 
-        let changedWord;
-            
-        const changedDef = {
-            ...wordData.results[defIndex],
-            isFavoriteDefinition: false,
-            note: ""
-        };
+            let changedWord;
+                
+            const changedDef = {
+                ...wordData.results[defIndex],
+                isFavoriteDefinition: false,
+                note: ""
+            };
 
-        let hasAnotherFav = false;
-        let counter = 0;
-        wordData.results.forEach(def => {
-            if (def.isFavoriteDefinition){
-                counter++;
+            let hasAnotherFav = false;
+            let counter = 0;
+            wordData.results.forEach(def => {
+                if (def.isFavoriteDefinition){
+                    counter++;
+                }
+            })
+            if(counter > 1) {
+                hasAnotherFav = true;
             }
-        })
-        if(counter > 1) {
-            hasAnotherFav = true;
-        }
-        
-        if (hasAnotherFav) {
-            changedWord = {
-                ...wordData,
-            isFavoriteWord: true,
-            results: wordData.results.map((def, i) => (i == defIndex ? changedDef : def))
-            };
-        } else {
-            changedWord = {
-                ...wordData,
-            isFavoriteWord: false,
-            results: wordData.results.map((def, i) => (i == defIndex ? changedDef : def))
-            };
-        }
+            
+            if (hasAnotherFav) {
+                changedWord = {
+                    ...wordData,
+                isFavoriteWord: true,
+                results: wordData.results.map((def, i) => (i == defIndex ? changedDef : def))
+                };
+            } else {
+                changedWord = {
+                    ...wordData,
+                isFavoriteWord: false,
+                results: wordData.results.map((def, i) => (i == defIndex ? changedDef : def))
+                };
+            }
 
-        const success = await handleSubmit(changedWord);
+            const response = await handleSubmit(changedWord);
 
-        if(!success){
-            setDeleteError(true);
-        } else {
-            setFavDefIndex(null);
-            setFavIndex(null);
+            if(!response){
+                setFavDefIndex(null);
+                setFavIndex(null);
+            } else {
+                setDeleteError(response);
+            }
         }
     }
 
@@ -122,13 +123,14 @@ function Favorites () {
         setNote("");
         setFavDefIndex(null);
         setFavIndex(null);
-        setFavError(false);
+        setFavError(null);
     }
 
     const handleSaveNote = async (e) => {
         e.preventDefault();
+        setFavError(null);
 
-        const word = filteredWords.filter(word => word.id === favIndex)[0];
+        const word = filteredWords.filter(word => word.id == favIndex)[0];
 
         const changedDef = {
             ...word.results[favDefIndex],
@@ -140,16 +142,16 @@ function Favorites () {
         results: word.results.map((def, i) => (i == favDefIndex ? changedDef : def))
         };
 
-        const success = await handleSubmit(changedWord);
+        const response = await handleSubmit(changedWord);
 
-        if (success) {
+        if (!response) {
             setFavDefIndex(null);
             setShowEdit(false);
             setNote("");
             setFavIndex(null);
-            setFavError(false);
+            setFavError(null);
         } else {
-            setFavError(true);
+            setFavError(response);
         }
     }
 

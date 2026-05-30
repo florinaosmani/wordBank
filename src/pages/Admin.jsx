@@ -3,14 +3,13 @@ import { useState, useEffect } from 'react';
 import { getAllWords, deleteWord, createWord } from '../api/words';
 import WordDefinition from '../components/WordDefinition';
 import NewForm from '../components/NewForm';
-import { faSquareViadeo } from '@fortawesome/free-brands-svg-icons';
 
 function Admin () {
     const [allWords, setAllWords] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const [showForm, setShowForm] = useState(false);
-    const [formError, setFormError] = useState(false);
+    const [formError, setFormError] = useState(null);
 
     useEffect(()=>{
         async function loadWords() {
@@ -33,15 +32,16 @@ function Admin () {
 
 
     async function handleOnSave(newWord) {
+        setFormError(null);
         try {
             const saved = await createWord(newWord);
         
             setAllWords(prev => [...prev, saved]);
             setShowForm(false);
-            return true;
+            return null;
         } catch (e) {
-            setFormError(true);
-            return false;
+            setFormError(e);
+            return e;
         }
     }
 
@@ -101,8 +101,7 @@ function Admin () {
             <NewForm 
             onClickCancel={() => {setShowForm(false); setFormError(false)}}
             onSave={handleOnSave}
-            formError={formError}
-            setFormError={setFormError}/>}
+            formError={formError}/>}
         </div>
     )
 }

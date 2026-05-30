@@ -7,7 +7,7 @@ import { faHeart as heartEmpty } from '@fortawesome/free-regular-svg-icons'
 
 function WordDefinitionBox ({ def, index, word, checkBoxes, onClick}) {
     return (
-        <div className={classes.wordDefinitionBoxContainer} key={`wordDefinition_${index}`}>
+        <div className={classes.wordDefinitionBoxContainer}>
             <p className={classes.defNum}>
                 {index + 1}
             </p>

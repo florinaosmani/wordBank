@@ -1,5 +1,4 @@
 import classes from '../resources/css/components/checkFavorite.module.css';
-import CheckBox from './CheckBox';
 
 function CheckFavorite ({ onClickClose, def, word, onChange, onSubmit, note, error}) {
     return (
@@ -11,7 +10,7 @@ function CheckFavorite ({ onClickClose, def, word, onChange, onSubmit, note, err
                     <textarea maxLength="1000" onChange={onChange} value={note}></textarea>
                 </div>
             </div>
-            {error && <p className={classes.error}>Try again there's been an error!</p>}
+            {error && <p className={classes.error}>Try again there's been an error! Error: {error.message}</p>}
             <div className={classes.buttonContainer}>
                 <button type="reset" onClick={onClickClose}>
                     Cancel

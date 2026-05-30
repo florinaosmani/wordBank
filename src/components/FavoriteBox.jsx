@@ -8,7 +8,7 @@ import { faTrashCan } from '@fortawesome/free-regular-svg-icons'
 function FavoriteBox ({ def , word, onClickEdit, onClickDelete, defIndex, wordIndex, deleteError }) {
     return (
         <div className={classes.favoriteBoxContainer}>
-            {deleteError && <p className={classes.error}>Oopsie, there's been an error in deleting your word</p>}
+            {deleteError && <p className={classes.error}>Oopsie, there's been an error in deleting your word. Error: {deleteError.message}</p>}
             <WordDefinition def={def} word={word}/>
             <p>{def.note}</p>
             <div className={classes.buttonContainer}>

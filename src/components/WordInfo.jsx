@@ -4,10 +4,11 @@ import CheckFavorite from "./CheckFavorite";
 import classes from '../resources/css/components/wordInfo.module.css';
 import { useState } from "react";
 
-function WordInfo ({ wordData, checkBoxes, onSubmit }) {
+function WordInfo ({ wordData, checkBoxes, onSubmit}) {
     const [favOpen, setFavOpen] = useState(false);
     const [favDefIndex, setFavDefIndex] = useState(null);
     const [note, setNote] = useState("");
+    const [favError, setFavError] = useState(null);
 
     const handleClickHeart = (e) => {
         const index = e.currentTarget.value;
@@ -57,13 +58,16 @@ function WordInfo ({ wordData, checkBoxes, onSubmit }) {
         setFavOpen(false);
         setNote("");
         setFavDefIndex(null);
+        setFavError(null);
     }
 
     const handleChangeNote = (e) => {
         setNote(e.target.value);
+        setFavError(null);
     }
 
-    const handleSaveNote = (e) => {
+    const handleSaveNote = async (e) => {
+        setFavError(null);
         e.preventDefault();
 
         const changedDef = {
@@ -78,11 +82,15 @@ function WordInfo ({ wordData, checkBoxes, onSubmit }) {
         results: wordData.results.map((def, i) => (i == favDefIndex ? changedDef : def))
         };
 
-        setFavDefIndex(null);
-        setFavOpen(false);
-        setNote("");
+        const response = await onSubmit(changedWord);
 
-        onSubmit(changedWord);
+        if (!response) {
+            setFavDefIndex(null);
+            setFavOpen(false);
+            setNote("");
+        } else {
+            setFavError(response);
+        }
     }
     
     return (
@@ -109,7 +117,8 @@ function WordInfo ({ wordData, checkBoxes, onSubmit }) {
             word={wordData.word}
             onSubmit={handleSaveNote}
             note={note}
-            onChange={handleChangeNote}/>}
+            onChange={handleChangeNote}
+            error={favError}/>}
         </div>
     )
 }

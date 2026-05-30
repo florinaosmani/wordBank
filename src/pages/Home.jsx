@@ -37,7 +37,6 @@ function Home () {
         let ran;
         do {  
             ran = Math.floor(Math.random() * allWords.length);
-            console.log(ran);
         } while (ran === index);
 
         setIndex(ran);
@@ -55,10 +54,9 @@ function Home () {
         try {
             const updated = await updateWord(word.id, word);
             setAllWords(prev => prev.map(w => (w.id === word.id ? updated : w)));
-            return true;
+            return null;
         } catch (e) {
-            setFavError(true);
-            return false;
+            return e;
         }
     }
 
@@ -104,7 +102,10 @@ function Home () {
             <WordInfo 
             wordData={wordData} 
             checkBoxes={checkBoxes}
-            onSubmit={handleSubmitFav}/>}
+            onSubmit={handleSubmitFav}
+            favError={favError}
+            setFavError={setFavError}
+            />}
         </div>
     )
 }

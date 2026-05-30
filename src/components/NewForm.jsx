@@ -1,7 +1,7 @@
 import classes from '../resources/css/components/newForm.module.css';
-import { use, useState } from 'react';
+import { useState } from 'react';
 
-function NewForm ({ onClickCancel, onSave, formError, setFormError }) {
+function NewForm ({ onClickCancel, onSave, formError }) {
     const [newWord, setNewWord] = useState({word : '', syllables:'', pronunciation: ''});
     const [newDefinition, setNewDefinition] = useState({definition: '', pos: '', examples: '', synonyms: '', antonyms: ''});
     const [definitions, setDefinitions] = useState([]);
@@ -10,7 +10,6 @@ function NewForm ({ onClickCancel, onSave, formError, setFormError }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setFormError(false);
         if (newDefinition.definition
             && newDefinition.pos
             && newDefinition.antonyms
@@ -42,9 +41,9 @@ function NewForm ({ onClickCancel, onSave, formError, setFormError }) {
                 isFavoriteWord: false
             };
 
-            const isOk = await onSave(word);
+            const response = await onSave(word);
 
-            if (isOk) {
+            if (!response) {
                 setDefinitions([]);
                 setNewWord({word : '', syllables:'', pronunciation: ''});
                 setNewDefinition({definition: '', pos: '', examples: '', synonyms: '', antonyms: ''})
@@ -131,7 +130,7 @@ function NewForm ({ onClickCancel, onSave, formError, setFormError }) {
                 <button type="submit" onClick={handleSubmit}>Save</button>
             </div>
             {missingWord && <p className={classes.alert}>Please fill out all fields before submitting!</p>}
-            {formError && <p className={classes.alert}>Something went wrong, please try again!</p>}
+            {formError && <p className={classes.alert}>Something went wrong, please try again! Error: {formError.message}</p>}
         </form>
     )
 }
